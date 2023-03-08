@@ -73,7 +73,11 @@ class int_two_test:
                 self.fileSASA.grid_forget()
                 shortpathStateD = os.path.basename(os.path.abspath(file.name))
                 self.fileSASAshort.insert(0, str(shortpathStateD))
-                self.fileSASAshort.configure(state='disabled')
+            else:
+                self.fileSASAshort.configure(background='#AEB2B5', foreground='#404040', justify="center", width=45)
+                _text_ = 'enter filepath for state data (.csv)'
+                self.fileSASAshort.delete("0", "end")
+                self.fileSASAshort.insert("0", _text_)
 
             # to retrieve state filepath, use:
             # variable name = (str(self.fileSASA.get()))
@@ -258,10 +262,12 @@ class int_two_test:
         # confirm State 1 PDB
         def selectPDB_S1():
             if len(self.state1.get()) == 4:
-                self.state1.configure(state='normal')
+                self.state1.configure(background='#B1E4E5', foreground='black', state='normal')
             else:
                 self.state1.delete(0, 'end')
-                self.state1.configure(state='normal')
+                _text_ = 'Enter State1 (.pdb)'
+                self.state1.insert(0, _text_)
+                self.state1.configure(background='#aeb2b5', foreground='#404040', justify="center", width=20, state='normal')
 
         self.selectState1 = ttk.Button(self.IntMain, command=selectPDB_S1)
         self.selectState1.configure(text='Enter PDB1')
@@ -270,10 +276,12 @@ class int_two_test:
         # confirm State 1 PDB
         def selectPDB_S2():
             if len(self.state1.get()) == 4:
-                self.state2.configure(state='normal')
+                self.state2.configure(background='#B1E4E5', foreground='black', state='normal')
             else:
                 self.state2.delete(0, 'end')
-                self.state2.configure(state='normal')
+                _text_ = 'Enter State2 (.pdb)'
+                self.state2.insert(0, _text_)
+                self.state2.configure(background='#aeb2b5', foreground='#404040', justify="center", width=20, state='normal')
 
         self.SelectState2 = ttk.Button(self.IntMain, command=selectPDB_S2)
         self.SelectState2.configure(text='Enter PDB2')
@@ -300,7 +308,7 @@ class int_two_test:
             # linearPDBdir = str(self.LinearDirectoryFull.get())
 
         self.pdb_dir_Lin = ttk.Button(self.IntMain, command=set_LinPDB_dir)
-        self.pdb_dir_Lin.configure(text='Select Folder', width=17)
+        self.pdb_dir_Lin.configure(text='Linear Directory', width=17)
         self.pdb_dir_Lin.grid(column=0, pady=5, row=6)
 
         # select Rigimol PDB directory
@@ -318,7 +326,7 @@ class int_two_test:
             # rigimolPDBdir = str(self.RigimolDirectoryFull.get())
 
         self.pdb_dir_Rig = ttk.Button(self.IntMain, command=set_RigPDB_dir)
-        self.pdb_dir_Rig.configure(text='Select Folder', width=17)
+        self.pdb_dir_Rig.configure(text='Rigimol Directory', width=17)
         self.pdb_dir_Rig.grid(column=0, row=7)
 
         # select Climber PDB directory
@@ -374,8 +382,8 @@ class int_two_test:
         self.ClimberDirectoryFull = ttk.Entry(self.IntMain)
         self.ClimberDirectoryFull.grid_forget()
 
-        # select CSV input directory
-        def set_csv_indir():
+        # select graphs output directory
+        def set_graph_dir():
             self.csv_inpath.delete("0", "end")
             directory = filedialog.askdirectory()
             if directory:
@@ -385,17 +393,17 @@ class int_two_test:
                 self.csv_inpathFull.insert(0, str(csv_InPathFull))
                 self.csv_inpathFull.grid_forget()
 
-            # to retrieve Input SASA directory use:
+            # to retrieve Graph output directory use:
             # variable name = str(self.csv_inpathFull.get())
 
-        self.csvin_dir = ttk.Button(self.IntMain, command=set_csv_indir)
-        self.csvin_dir.configure(text='Select Folder', width=17)
+        self.csvin_dir = ttk.Button(self.IntMain, command=set_graph_dir)
+        self.csvin_dir.configure(text='Graphs Directory', width=17)
         self.csvin_dir.grid(column=0, row=9, pady=15)
 
         self.csv_inpath = tk.Entry(self.IntMain)
         self.csv_inpath.configure(background='#AEB2B5', foreground='#404040',
                                   justify="left", width=27)
-        _text_ = 'CSV Input Directory'
+        _text_ = 'Graphs Output Directory'
         self.csv_inpath.delete("0", "end")
         self.csv_inpath.insert("0", _text_)
         self.csv_inpath.grid(column=1, row=9, sticky="w")
@@ -418,7 +426,7 @@ class int_two_test:
             # variable name = str(self.csv_outpathFull.get())
 
         self.csvout_dir = ttk.Button(self.IntMain, command=set_csv_outdir)
-        self.csvout_dir.configure(text='Select Folder', width=17)
+        self.csvout_dir.configure(text='CSV Directory', width=17)
         self.csvout_dir.grid(column=0, row=10)
 
         self.csv_outpath = tk.Entry(self.IntMain)
@@ -467,7 +475,6 @@ class int_two_test:
         self.ExportCli.grid(column=3, ipadx=2, ipady=2, row=8)
         self.ExportCli.grid_forget()
 
-        # calculate SASA for Linear-generated states
         def calculateLinSASA():
             from pymol import cmd
             import pandas as pd
@@ -475,6 +482,8 @@ class int_two_test:
             import sys
             import csv
             import glob
+
+            self.CalcSASA_Lin.configure(state='disabled')
 
             # define the input and output
             inputcsvfile = (str(self.fileSASA.get()))
@@ -491,7 +500,7 @@ class int_two_test:
             PeptideListSASA["Start-End"] = PeptideListSASA["Start"].astype(str) + "-" + PeptideListSASA["End"].astype(
                 str)
 
-            def SASAperPep_def(inputLinearPDB, PeptideListSASA):
+            def SASAperPep(inputLinearPDB, PeptideListSASA):
 
                 file_list = glob.glob(inputLinearPDB + '*.pdb')
                 if file_list:
@@ -527,12 +536,12 @@ class int_two_test:
                 PeptideListSASA['MaxSASA'] = SASAlimitperPeptide
                 PeptideListSASA.to_csv(outputSASApath + '\\' + outputcsvfilemax + '.csv', index=None, header=True)
 
-            cmd.extend("SASAperPeptide_def", SASAperPep_def)
-            SASAperPep_def(inputLinearPDB, PeptideListSASA)
+            cmd.extend("SASAperPep", SASAperPep)
+            SASAperPep(inputLinearPDB, PeptideListSASA)
 
             cmd.extend("UpperSASAlimit", UpperSASAlimit)
             UpperSASAlimit(PeptideListSASA)
-            self.CalcSASA_Lin.configure(state='disabled')
+            self.CalcSASA_Lin.configure(state='normal')
 
         self.CalcSASA_Lin = ttk.Button(self.IntMain, command=calculateLinSASA)
         self.CalcSASA_Lin.configure(text='Calculate SASA', width=13)
@@ -645,6 +654,7 @@ class int_two_test:
         self.CalcSASA_Cli = ttk.Button(self.IntMain, command=calculateCliSASA)
         self.CalcSASA_Cli.configure(text='Calculate SASA', width=13)
         self.CalcSASA_Cli.grid(column=0, columnspan=2, ipadx=2, ipady=2, row=15)
+        self.CalcSASA_Cli.grid_forget()
 
         # calculate H Bonds for Linear-generated states
         def calculateLinHBONDS():
@@ -950,6 +960,7 @@ class int_two_test:
         self.CalcHBONDS_Cli = ttk.Button(self.IntMain, command=calculateCliHBONDS)
         self.CalcHBONDS_Cli.configure(text='Calculate Hbonds', width=15)
         self.CalcHBONDS_Cli.grid(column=1, ipadx=2, ipady=2, row=15, sticky="e")
+        self.CalcHBONDS_Cli.grid_forget()
 
         self.CalculateSubheading = ttk.Label(self.IntMain)
         self.CalculateSubheading.configure(
@@ -1035,6 +1046,7 @@ class int_two_test:
             text='Climber',
             width=10)
         self.ClimberCalc.grid(column=0, padx=10, row=15, sticky="w")
+        self.ClimberCalc.grid_forget()
 
         # Main widget
         self.mainwindow = self.IntMain
