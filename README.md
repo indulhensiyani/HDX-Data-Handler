@@ -11,7 +11,7 @@ HDX Data Handler is an interface package designed to:
 INTERFACE HOUSEKEEPING
 ----------------------
 
-1. To start, within the folder "hdx-data-handler-repo", go to the folder "script-directory" and find the following .py files:
+1. To start, within the folder "hdx-data-handler-repo", find the following .py files:
 
 	- ColorStatesGraph.py
 	- HDX_data_handler_main.py
