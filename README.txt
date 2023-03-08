@@ -1,4 +1,3 @@
-=======================
 HDX DATA HANDLER (2023)
 =======================
 
@@ -12,7 +11,7 @@ HDX Data Handler is an interface package designed to:
 INTERFACE HOUSEKEEPING
 ----------------------
 
-1. To start, within the folder "hdx-data-handler-repo", go to the folder "script-directory" and find the following .py files:
+1. To start, within the folder "hdx-data-handler-repo", find the following .py files:
 
 	- ColorStatesGraph.py
 	- HDX_data_handler_main.py
@@ -44,5 +43,3 @@ Morphing via RigiMOL opens PyMOL and shows the two protein states in the window.
 It will appear to be unresponsive for five minutes or longer, but it is processing the morph in the background.
 Do not close the PyMOL window or terminate the interface program until the RigiMOL morph has concluded.
 RigiMOL will have finished processing when a moving animation between the protein states appear in PyMOL.
-
-
